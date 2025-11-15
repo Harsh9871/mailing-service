@@ -3,7 +3,7 @@
     "name": "Mailing Service API",
     "version": "1.0.0",
     "description": "A RESTful microservice for sending emails with customizable SMTP configurations",
-    "base_url": "http://localhost:3200/api/mail",
+    "base_url": "https://trigger-lists-clothing-proteins.trycloudflare.com/api/mail",
     "endpoints": [
       {
         "method": "POST",
@@ -188,12 +188,12 @@
       {
         "step": 2,
         "action": "Send a test request using curl",
-        "command": "curl -X POST http://localhost:3100/api/mail/send -H \"Content-Type: application/json\" -d '{\"to\": \"test@example.com\", \"subject\": \"Test\", \"text\": \"Hello World\"}'"
+        "command": "curl -X POST https://trigger-lists-clothing-proteins.trycloudflare.com/api/mail/send -H \"Content-Type: application/json\" -d '{\"to\": \"test@example.com\", \"subject\": \"Test\", \"text\": \"Hello World\"}'"
       },
       {
         "step": 3,
         "action": "Or use the web interface",
-        "instruction": "Visit http://localhost:3100 in browser to access the documentation and testing page"
+        "instruction": "Visit https://trigger-lists-clothing-proteins.trycloudflare.com in browser to access the documentation and testing page"
       }
     ],
     "common_use_cases": [

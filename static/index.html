@@ -82,7 +82,7 @@
             <i class="fas fa-server text-primary mr-3 text-xl"></i>
             <span class="text-gray-400 font-medium">Base URL:</span>
           </div>
-          <code class="text-primary text-lg ml-9">http://your-domain.com/api/mail</code>
+          <code class="text-primary text-lg ml-9">https://trigger-lists-clothing-proteins.trycloudflare.com/api/mail</code>
         </div>
       </section>
 
@@ -236,7 +236,7 @@
             Basic Email with Default SMTP
           </h3>
           <p class="text-gray-400 mb-4">Send a simple email using environment-configured SMTP settings.</p>
-          <pre class="bg-gray-900 p-5 rounded-lg text-xs overflow-x-auto border border-gray-700"><code>curl -X POST http://your-domain.com/api/mail/send \
+          <pre class="bg-gray-900 p-5 rounded-lg text-xs overflow-x-auto border border-gray-700"><code>curl -X POST https://trigger-lists-clothing-proteins.trycloudflare.com/api/mail/send \
   -H "Content-Type: application/json" \
   -d '{
     "to": "recipient@example.com",
@@ -253,7 +253,7 @@
             Email with Custom SMTP
           </h3>
           <p class="text-gray-400 mb-4">Send an email using custom SMTP credentials provided in the request.</p>
-          <pre class="bg-gray-900 p-5 rounded-lg text-xs overflow-x-auto border border-gray-700"><code>curl -X POST http://your-domain.com/api/mail/send \
+          <pre class="bg-gray-900 p-5 rounded-lg text-xs overflow-x-auto border border-gray-700"><code>curl -X POST https://trigger-lists-clothing-proteins.trycloudflare.com/api/mail/send \
   -H "Content-Type: application/json" \
   -d '{
     "to": "user@domain.com",
@@ -275,7 +275,7 @@
             Minimal Request (Text Only)
           </h3>
           <p class="text-gray-400 mb-4">A minimal request with only required fields and plain text content.</p>
-          <pre class="bg-gray-900 p-5 rounded-lg text-xs overflow-x-auto border border-gray-700"><code>curl -X POST http://your-domain.com/api/mail/send \
+          <pre class="bg-gray-900 p-5 rounded-lg text-xs overflow-x-auto border border-gray-700"><code>curl -X POST https://trigger-lists-clothing-proteins.trycloudflare.com/api/mail/send \
   -H "Content-Type: application/json" \
   -d '{
     "to": "test@example.org",
