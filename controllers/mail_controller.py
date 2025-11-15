@@ -6,7 +6,14 @@ def send_mail_route(request):
         data = request.json
         
         # Validate required fields
-        if not data or 'to' not in data or 'subject' not in data:
+        if not data:
+            response.status = 400
+            return {
+                'success': False, 
+                'error': 'Request body is required'
+            }
+        
+        if 'to' not in data or 'subject' not in data:
             response.status = 400
             return {
                 'success': False, 
