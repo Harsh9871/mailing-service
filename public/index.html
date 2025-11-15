@@ -1,0 +1,569 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Mailing Service API</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            primary: '#60a5fa',
+            secondary: '#1e40af'
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    .tab-content { display: none; }
+    .tab-content.active { display: block; }
+    .content-toggle { color: #9ca3af; }
+    .content-toggle.active { background: #1e40af; color: white; }
+    .content-editor.hidden { display: none; }
+    .doc-section { scroll-margin-top: 2rem; }
+  </style>
+</head>
+<body class="bg-gray-900 text-gray-100 min-h-screen">
+
+  <div class="container mx-auto px-4 py-8 max-w-7xl">
+    <!-- Header -->
+    <header class="text-center mb-10">
+      <h1 class="text-4xl md:text-5xl font-bold text-primary mb-3">Mailing Service API</h1>
+      <p class="text-lg text-gray-400 max-w-2xl mx-auto">
+        Send emails via REST API with custom or default SMTP configurations
+      </p>
+      <div class="mt-5 flex justify-center flex-wrap gap-3">
+        <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-green-900 text-green-200">
+          <i class="fas fa-check-circle mr-1"></i> Production Ready
+        </span>
+        <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-blue-900 text-blue-200">
+          <i class="fas fa-code mr-1"></i> REST API
+        </span>
+        <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-purple-900 text-purple-200">
+          <i class="fas fa-envelope mr-1"></i> Nodemailer
+        </span>
+      </div>
+    </header>
+
+    <!-- Tabs Navigation -->
+    <div class="flex justify-center mb-8 border-b border-gray-700">
+      <button 
+        onclick="openTab('docs')" 
+        class="tab-btn active px-6 py-3 text-sm font-medium border-b-2 border-primary text-primary"
+      >
+        <i class="fas fa-book mr-2"></i> Documentation
+      </button>
+      <button 
+        onclick="openTab('test')" 
+        class="tab-btn px-6 py-3 text-sm font-medium text-gray-400 hover:text-primary transition"
+      >
+        <i class="fas fa-paper-plane mr-2"></i> Test API
+      </button>
+    </div>
+
+    <!-- Documentation Tab -->
+    <div id="docs" class="tab-content active">
+      <!-- Quick Start -->
+      <section class="doc-section bg-gradient-to-r from-blue-900/30 to-purple-900/30 rounded-xl shadow-lg p-8 mb-8 border border-blue-700/50">
+        <h2 class="text-3xl font-bold text-blue-300 mb-4 flex items-center">
+          <i class="fas fa-rocket mr-3"></i> Quick Start
+        </h2>
+        <p class="text-gray-300 mb-6 text-lg leading-relaxed">
+          The Mailing Service API is a lightweight, production-ready microservice that enables you to send emails programmatically. 
+          Built with Node.js and Nodemailer, it supports both default SMTP configurations and custom per-request SMTP settings.
+        </p>
+        <div class="bg-gray-800/80 p-5 rounded-lg border border-gray-700">
+          <div class="flex items-center mb-3">
+            <i class="fas fa-server text-primary mr-3 text-xl"></i>
+            <span class="text-gray-400 font-medium">Base URL:</span>
+          </div>
+          <code class="text-primary text-lg ml-9">http://your-domain.com/api/mail</code>
+        </div>
+      </section>
+
+      <!-- API Endpoint -->
+      <section class="doc-section bg-gray-800 rounded-xl shadow-lg p-8 mb-8 border border-gray-700">
+        <h2 class="text-3xl font-bold text-primary mb-6 flex items-center">
+          <i class="fas fa-code mr-3"></i> API Endpoint
+        </h2>
+
+        <div class="bg-gray-700/50 p-5 rounded-lg mb-6 border border-gray-600">
+          <div class="flex items-center flex-wrap gap-3">
+            <span class="bg-green-600 text-white px-4 py-2 rounded-lg text-sm font-bold uppercase tracking-wide">POST</span>
+            <code class="text-xl text-primary font-mono">/api/mail/send</code>
+          </div>
+          <p class="text-gray-300 mt-4 leading-relaxed">
+            Send an email with optional custom SMTP configuration. Either <code class="text-primary bg-gray-900 px-2 py-1 rounded">text</code> or 
+            <code class="text-primary bg-gray-900 px-2 py-1 rounded">html</code> content must be provided.
+          </p>
+        </div>
+
+        <!-- Request Parameters -->
+        <h3 class="text-2xl font-semibold mb-4 text-blue-400 flex items-center">
+          <i class="fas fa-arrow-right mr-2"></i> Request Body
+        </h3>
+        <div class="overflow-x-auto mb-8">
+          <table class="min-w-full bg-gray-700/50 rounded-lg overflow-hidden border border-gray-600">
+            <thead class="bg-gray-600">
+              <tr>
+                <th class="py-3 px-4 text-left text-sm font-semibold">Parameter</th>
+                <th class="py-3 px-4 text-left text-sm font-semibold">Type</th>
+                <th class="py-3 px-4 text-left text-sm font-semibold">Required</th>
+                <th class="py-3 px-4 text-left text-sm font-semibold">Description</th>
+              </tr>
+            </thead>
+            <tbody class="text-sm">
+              <tr class="border-t border-gray-600 hover:bg-gray-700/30">
+                <td class="py-3 px-4"><code class="text-primary font-mono">to</code></td>
+                <td class="py-3 px-4 text-gray-400">String</td>
+                <td class="py-3 px-4"><span class="px-2 py-1 bg-green-900 text-green-200 rounded text-xs font-medium">Yes</span></td>
+                <td class="py-3 px-4 text-gray-300">Recipient email address</td>
+              </tr>
+              <tr class="border-t border-gray-600 hover:bg-gray-700/30">
+                <td class="py-3 px-4"><code class="text-primary font-mono">subject</code></td>
+                <td class="py-3 px-4 text-gray-400">String</td>
+                <td class="py-3 px-4"><span class="px-2 py-1 bg-green-900 text-green-200 rounded text-xs font-medium">Yes</span></td>
+                <td class="py-3 px-4 text-gray-300">Email subject line</td>
+              </tr>
+              <tr class="border-t border-gray-600 hover:bg-gray-700/30">
+                <td class="py-3 px-4"><code class="text-primary font-mono">text</code></td>
+                <td class="py-3 px-4 text-gray-400">String</td>
+                <td class="py-3 px-4"><span class="px-2 py-1 bg-yellow-900 text-yellow-200 rounded text-xs font-medium">Optional*</span></td>
+                <td class="py-3 px-4 text-gray-300">Plain text email content</td>
+              </tr>
+              <tr class="border-t border-gray-600 hover:bg-gray-700/30">
+                <td class="py-3 px-4"><code class="text-primary font-mono">html</code></td>
+                <td class="py-3 px-4 text-gray-400">String</td>
+                <td class="py-3 px-4"><span class="px-2 py-1 bg-yellow-900 text-yellow-200 rounded text-xs font-medium">Optional*</span></td>
+                <td class="py-3 px-4 text-gray-300">HTML email content</td>
+              </tr>
+              <tr class="border-t border-gray-600 hover:bg-gray-700/30">
+                <td class="py-3 px-4"><code class="text-primary font-mono">smtp</code></td>
+                <td class="py-3 px-4 text-gray-400">Object</td>
+                <td class="py-3 px-4"><span class="px-2 py-1 bg-gray-600 text-gray-300 rounded text-xs font-medium">Optional</span></td>
+                <td class="py-3 px-4 text-gray-300">Custom SMTP configuration (see below)</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="bg-yellow-900/20 border border-yellow-700 rounded-lg p-4 mb-8">
+          <p class="text-sm text-yellow-200">
+            <i class="fas fa-exclamation-triangle mr-2"></i>
+            <strong>Note:</strong> You must provide either <code class="text-primary bg-gray-900 px-2 py-1 rounded">text</code> or 
+            <code class="text-primary bg-gray-900 px-2 py-1 rounded">html</code> content (or both).
+          </p>
+        </div>
+
+        <!-- SMTP Configuration -->
+        <h3 class="text-2xl font-semibold mb-4 text-purple-400 flex items-center">
+          <i class="fas fa-cog mr-2"></i> SMTP Configuration Object
+        </h3>
+        <p class="text-gray-300 mb-4 leading-relaxed">
+          Optionally include a custom SMTP configuration in your request. If omitted, the service will use default environment variables.
+        </p>
+        <div class="overflow-x-auto mb-8">
+          <table class="min-w-full bg-gray-700/50 rounded-lg overflow-hidden border border-gray-600">
+            <thead class="bg-gray-600">
+              <tr>
+                <th class="py-3 px-4 text-left text-sm font-semibold">Field</th>
+                <th class="py-3 px-4 text-left text-sm font-semibold">Type</th>
+                <th class="py-3 px-4 text-left text-sm font-semibold">Example</th>
+                <th class="py-3 px-4 text-left text-sm font-semibold">Description</th>
+              </tr>
+            </thead>
+            <tbody class="text-sm">
+              <tr class="border-t border-gray-600 hover:bg-gray-700/30">
+                <td class="py-3 px-4"><code class="text-primary font-mono">host</code></td>
+                <td class="py-3 px-4 text-gray-400">String</td>
+                <td class="py-3 px-4 text-gray-400">smtp.gmail.com</td>
+                <td class="py-3 px-4 text-gray-300">SMTP server hostname</td>
+              </tr>
+              <tr class="border-t border-gray-600 hover:bg-gray-700/30">
+                <td class="py-3 px-4"><code class="text-primary font-mono">port</code></td>
+                <td class="py-3 px-4 text-gray-400">Number</td>
+                <td class="py-3 px-4 text-gray-400">587 or 465</td>
+                <td class="py-3 px-4 text-gray-300">SMTP server port (587 for TLS, 465 for SSL)</td>
+              </tr>
+              <tr class="border-t border-gray-600 hover:bg-gray-700/30">
+                <td class="py-3 px-4"><code class="text-primary font-mono">user</code></td>
+                <td class="py-3 px-4 text-gray-400">String</td>
+                <td class="py-3 px-4 text-gray-400">you@gmail.com</td>
+                <td class="py-3 px-4 text-gray-300">SMTP authentication username</td>
+              </tr>
+              <tr class="border-t border-gray-600 hover:bg-gray-700/30">
+                <td class="py-3 px-4"><code class="text-primary font-mono">pass</code></td>
+                <td class="py-3 px-4 text-gray-400">String</td>
+                <td class="py-3 px-4 text-gray-400">app-password</td>
+                <td class="py-3 px-4 text-gray-300">SMTP authentication password</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Response Format -->
+        <h3 class="text-2xl font-semibold mb-4 text-green-400 flex items-center">
+          <i class="fas fa-check-circle mr-2"></i> Success Response
+        </h3>
+        <pre class="bg-gray-900 p-5 rounded-lg text-sm overflow-x-auto border border-gray-700 mb-6"><code class="text-green-300">{
+  "success": true,
+  "messageId": "&lt;abc123@example.com&gt;"
+}</code></pre>
+
+        <h3 class="text-2xl font-semibold mb-4 text-red-400 flex items-center">
+          <i class="fas fa-times-circle mr-2"></i> Error Response
+        </h3>
+        <pre class="bg-gray-900 p-5 rounded-lg text-sm overflow-x-auto border border-gray-700"><code class="text-red-300">{
+  "success": false,
+  "error": "Error message describing what went wrong"
+}</code></pre>
+      </section>
+
+      <!-- Usage Examples -->
+      <section class="doc-section bg-gray-800 rounded-xl shadow-lg p-8 mb-8 border border-gray-700">
+        <h2 class="text-3xl font-bold text-primary mb-6 flex items-center">
+          <i class="fas fa-code-branch mr-3"></i> Usage Examples
+        </h2>
+
+        <!-- Example 1 -->
+        <div class="mb-8">
+          <h3 class="text-xl font-semibold mb-3 text-blue-300 flex items-center">
+            <i class="fas fa-1 mr-2 text-sm bg-blue-600 w-6 h-6 flex items-center justify-center rounded-full"></i>
+            Basic Email with Default SMTP
+          </h3>
+          <p class="text-gray-400 mb-4">Send a simple email using environment-configured SMTP settings.</p>
+          <pre class="bg-gray-900 p-5 rounded-lg text-xs overflow-x-auto border border-gray-700"><code>curl -X POST http://your-domain.com/api/mail/send \
+  -H "Content-Type: application/json" \
+  -d '{
+    "to": "recipient@example.com",
+    "subject": "Welcome to Our Service",
+    "text": "Thank you for signing up!",
+    "html": "<h1>Welcome!</h1><p>Thank you for signing up!</p>"
+  }'</code></pre>
+        </div>
+
+        <!-- Example 2 -->
+        <div class="mb-8">
+          <h3 class="text-xl font-semibold mb-3 text-purple-300 flex items-center">
+            <i class="fas fa-2 mr-2 text-sm bg-purple-600 w-6 h-6 flex items-center justify-center rounded-full"></i>
+            Email with Custom SMTP
+          </h3>
+          <p class="text-gray-400 mb-4">Send an email using custom SMTP credentials provided in the request.</p>
+          <pre class="bg-gray-900 p-5 rounded-lg text-xs overflow-x-auto border border-gray-700"><code>curl -X POST http://your-domain.com/api/mail/send \
+  -H "Content-Type: application/json" \
+  -d '{
+    "to": "user@domain.com",
+    "subject": "Custom SMTP Test",
+    "html": "<div><h2>Hello!</h2><p>This uses custom SMTP.</p></div>",
+    "smtp": {
+      "host": "smtp.gmail.com",
+      "port": 587,
+      "user": "your-email@gmail.com",
+      "pass": "your-app-password"
+    }
+  }'</code></pre>
+        </div>
+
+        <!-- Example 3 -->
+        <div>
+          <h3 class="text-xl font-semibold mb-3 text-green-300 flex items-center">
+            <i class="fas fa-3 mr-2 text-sm bg-green-600 w-6 h-6 flex items-center justify-center rounded-full"></i>
+            Minimal Request (Text Only)
+          </h3>
+          <p class="text-gray-400 mb-4">A minimal request with only required fields and plain text content.</p>
+          <pre class="bg-gray-900 p-5 rounded-lg text-xs overflow-x-auto border border-gray-700"><code>curl -X POST http://your-domain.com/api/mail/send \
+  -H "Content-Type: application/json" \
+  -d '{
+    "to": "test@example.org",
+    "subject": "Minimal Test",
+    "text": "This is a minimal email with only text content."
+  }'</code></pre>
+        </div>
+      </section>
+
+      <!-- Environment Variables -->
+      <section class="doc-section bg-gray-800 rounded-xl shadow-lg p-8 mb-8 border border-gray-700">
+        <h2 class="text-3xl font-bold text-primary mb-6 flex items-center">
+          <i class="fas fa-server mr-3"></i> Environment Configuration
+        </h2>
+        <p class="text-gray-300 mb-6 leading-relaxed">
+          Configure default SMTP settings using environment variables. These are used when no custom SMTP configuration is provided in the request.
+        </p>
+        <div class="grid md:grid-cols-2 gap-4">
+          <div class="bg-gray-700/50 p-4 rounded-lg border border-gray-600">
+            <code class="text-primary font-mono text-sm">DEFAULT_MAIL_HOST</code>
+            <p class="text-gray-400 text-xs mt-2">SMTP server hostname</p>
+          </div>
+          <div class="bg-gray-700/50 p-4 rounded-lg border border-gray-600">
+            <code class="text-primary font-mono text-sm">DEFAULT_MAIL_PORT</code>
+            <p class="text-gray-400 text-xs mt-2">SMTP server port</p>
+          </div>
+          <div class="bg-gray-700/50 p-4 rounded-lg border border-gray-600">
+            <code class="text-primary font-mono text-sm">DEFAULT_MAIL_USER</code>
+            <p class="text-gray-400 text-xs mt-2">SMTP username</p>
+          </div>
+          <div class="bg-gray-700/50 p-4 rounded-lg border border-gray-600">
+            <code class="text-primary font-mono text-sm">DEFAULT_MAIL_PASS</code>
+            <p class="text-gray-400 text-xs mt-2">SMTP password</p>
+          </div>
+          <div class="bg-gray-700/50 p-4 rounded-lg border border-gray-600">
+            <code class="text-primary font-mono text-sm">DEFAULT_MAIL_FROM</code>
+            <p class="text-gray-400 text-xs mt-2">Default sender email</p>
+          </div>
+          <div class="bg-gray-700/50 p-4 rounded-lg border border-gray-600">
+            <code class="text-primary font-mono text-sm">PORT</code>
+            <p class="text-gray-400 text-xs mt-2">Server port (default: 3100)</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Common Use Cases -->
+      <section class="doc-section bg-gray-800 rounded-xl shadow-lg p-8 mb-8 border border-gray-700">
+        <h2 class="text-3xl font-bold text-primary mb-6 flex items-center">
+          <i class="fas fa-lightbulb mr-3"></i> Common Use Cases
+        </h2>
+        <div class="grid md:grid-cols-2 gap-6">
+          <div class="bg-gradient-to-br from-blue-900/30 to-blue-800/20 p-6 rounded-lg border border-blue-700/50">
+            <div class="flex items-center mb-3">
+              <i class="fas fa-shopping-cart text-blue-400 text-2xl mr-3"></i>
+              <h3 class="text-lg font-semibold text-blue-300">Transactional Emails</h3>
+            </div>
+            <p class="text-gray-400 text-sm">Order confirmations, password resets, account notifications, and receipts.</p>
+          </div>
+          <div class="bg-gradient-to-br from-purple-900/30 to-purple-800/20 p-6 rounded-lg border border-purple-700/50">
+            <div class="flex items-center mb-3">
+              <i class="fas fa-bullhorn text-purple-400 text-2xl mr-3"></i>
+              <h3 class="text-lg font-semibold text-purple-300">Marketing Campaigns</h3>
+            </div>
+            <p class="text-gray-400 text-sm">Newsletters, promotional content, and bulk email campaigns.</p>
+          </div>
+          <div class="bg-gradient-to-br from-green-900/30 to-green-800/20 p-6 rounded-lg border border-green-700/50">
+            <div class="flex items-center mb-3">
+              <i class="fas fa-users text-green-400 text-2xl mr-3"></i>
+              <h3 class="text-lg font-semibold text-green-300">Multi-tenant Applications</h3>
+            </div>
+            <p class="text-gray-400 text-sm">Different clients can use their own SMTP configurations dynamically.</p>
+          </div>
+          <div class="bg-gradient-to-br from-yellow-900/30 to-yellow-800/20 p-6 rounded-lg border border-yellow-700/50">
+            <div class="flex items-center mb-3">
+              <i class="fas fa-bug text-yellow-400 text-2xl mr-3"></i>
+              <h3 class="text-lg font-semibold text-yellow-300">Development Testing</h3>
+            </div>
+            <p class="text-gray-400 text-sm">Test email functionality during development with ease.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Error Handling -->
+      <section class="doc-section bg-gray-800 rounded-xl shadow-lg p-8 border border-gray-700">
+        <h2 class="text-3xl font-bold text-primary mb-6 flex items-center">
+          <i class="fas fa-exclamation-triangle mr-3"></i> Error Handling
+        </h2>
+        <div class="space-y-4">
+          <div class="bg-red-900/20 border border-red-700 rounded-lg p-5">
+            <h3 class="text-lg font-semibold text-red-300 mb-2">SMTP Connection Error</h3>
+            <p class="text-gray-400 text-sm mb-2"><strong>Cause:</strong> Invalid SMTP credentials or server configuration</p>
+            <p class="text-gray-400 text-sm"><strong>Resolution:</strong> Verify SMTP settings and credentials are correct</p>
+          </div>
+          <div class="bg-orange-900/20 border border-orange-700 rounded-lg p-5">
+            <h3 class="text-lg font-semibold text-orange-300 mb-2">Missing Required Fields</h3>
+            <p class="text-gray-400 text-sm mb-2"><strong>Cause:</strong> Required fields (to, subject) not provided</p>
+            <p class="text-gray-400 text-sm"><strong>Resolution:</strong> Ensure all required fields are included in request body</p>
+          </div>
+          <div class="bg-yellow-900/20 border border-yellow-700 rounded-lg p-5">
+            <h3 class="text-lg font-semibold text-yellow-300 mb-2">No Content Provided</h3>
+            <p class="text-gray-400 text-sm mb-2"><strong>Cause:</strong> Both text and html fields are empty or missing</p>
+            <p class="text-gray-400 text-sm"><strong>Resolution:</strong> Provide at least one of text or html content</p>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <!-- Test API Tab -->
+    <div id="test" class="tab-content">
+      <section class="bg-gray-800 rounded-xl shadow-lg p-6 border border-gray-700">
+        <h2 class="text-2xl font-bold text-primary mb-6 flex items-center">
+          <i class="fas fa-vial mr-2"></i> Test the API
+        </h2>
+
+        <form id="emailForm" class="space-y-5">
+          <!-- Recipient & Subject -->
+          <div class="grid md:grid-cols-2 gap-5">
+            <div>
+              <label class="block text-sm font-medium text-gray-300 mb-1">Recipient Email *</label>
+              <input type="email" id="to" required placeholder="recipient@example.com"
+                class="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary text-white placeholder-gray-400">
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-gray-300 mb-1">Subject *</label>
+              <input type="text" id="subject" required placeholder="Test Email"
+                class="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary text-white">
+            </div>
+          </div>
+
+          <!-- Content with Toggle -->
+          <div>
+            <div class="flex items-center justify-between mb-3">
+              <label class="block text-sm font-medium text-gray-300">Email Content *</label>
+              <div class="flex bg-gray-700 rounded-lg p-1 border border-gray-600">
+                <button type="button" id="toggleText" onclick="toggleContentType('text')" 
+                  class="content-toggle active px-4 py-1.5 text-sm font-medium rounded transition">
+                  Plain Text
+                </button>
+                <button type="button" id="toggleHtml" onclick="toggleContentType('html')" 
+                  class="content-toggle px-4 py-1.5 text-sm font-medium rounded transition">
+                  HTML
+                </button>
+              </div>
+            </div>
+            <div id="textContent" class="content-editor">
+              <textarea id="text" rows="6" placeholder="This is a plain text email..."
+                class="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary text-white placeholder-gray-400"></textarea>
+            </div>
+            <div id="htmlContent" class="content-editor hidden">
+              <textarea id="html" rows="6" placeholder="&lt;h1&gt;Hello World&lt;/h1&gt;"
+                class="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary text-white placeholder-gray-400 font-mono text-sm"></textarea>
+            </div>
+          </div>
+
+          <!-- SMTP Config -->
+          <div class="bg-gray-700 p-5 rounded-lg border border-gray-600">
+            <h3 class="text-lg font-semibold text-blue-400 mb-4">Custom SMTP (Optional)</h3>
+            <div class="grid md:grid-cols-2 gap-4">
+              <input type="text" id="smtpHost" placeholder="smtp.gmail.com"
+                class="px-4 py-2 bg-gray-600 border border-gray-500 rounded focus:ring-2 focus:ring-primary focus:border-primary text-white">
+              <input type="number" id="smtpPort" placeholder="587"
+                class="px-4 py-2 bg-gray-600 border border-gray-500 rounded focus:ring-2 focus:ring-primary focus:border-primary text-white">
+            </div>
+            <div class="mt-4 grid md:grid-cols-2 gap-4">
+              <input type="text" id="smtpUser" placeholder="your-email@gmail.com"
+                class="px-4 py-2 bg-gray-600 border border-gray-500 rounded focus:ring-2 focus:ring-primary focus:border-primary text-white">
+              <input type="password" id="smtpPass" placeholder="••••••••••••••••"
+                class="px-4 py-2 bg-gray-600 border border-gray-500 rounded focus:ring-2 focus:ring-primary focus:border-primary text-white">
+            </div>
+          </div>
+
+          <!-- Submit -->
+          <button type="submit" 
+            class="w-full bg-primary hover:bg-secondary text-white font-medium py-3 px-4 rounded-lg transition flex items-center justify-center text-lg">
+            <i class="fas fa-paper-plane mr-2"></i> Send Test Email
+          </button>
+        </form>
+
+        <!-- Response -->
+        <div id="response" class="mt-6 hidden">
+          <h3 class="text-lg font-semibold text-green-400 mb-2">Response</h3>
+          <pre id="responseContent" class="bg-gray-900 p-4 rounded-lg text-sm text-green-300 overflow-x-auto border border-gray-700"></pre>
+        </div>
+
+        <div class="mt-6 p-4 bg-blue-900 bg-opacity-30 rounded-lg border border-blue-700">
+          <p class="text-sm text-blue-300">
+            <i class="fas fa-lightbulb mr-1"></i>
+            <strong>Note:</strong> If SMTP fields are empty, default environment config will be used.
+          </p>
+        </div>
+      </section>
+    </div>
+
+    <!-- Footer -->
+    <footer class="mt-12 pt-8 border-t border-gray-700 text-center text-gray-500 text-sm">
+      <p>Mailing Service API &copy; 2025 | Built with Nodemailer</p>
+    </footer>
+  </div>
+
+  <!-- Scripts -->
+  <script>
+    // Tab switching
+    function openTab(tabName) {
+      document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
+      document.querySelectorAll('.tab-btn').forEach(btn => {
+        btn.classList.remove('active', 'text-primary', 'border-primary');
+        btn.classList.add('text-gray-400');
+      });
+      document.getElementById(tabName).classList.add('active');
+      event.target.classList.add('active', 'text-primary', 'border-primary');
+      event.target.classList.remove('text-gray-400');
+    }
+
+    // Content type toggle
+    function toggleContentType(type) {
+      document.querySelectorAll('.content-toggle').forEach(btn => btn.classList.remove('active'));
+      document.querySelectorAll('.content-editor').forEach(editor => editor.classList.add('hidden'));
+      
+      if (type === 'text') {
+        document.getElementById('toggleText').classList.add('active');
+        document.getElementById('textContent').classList.remove('hidden');
+        document.getElementById('html').value = '';
+      } else {
+        document.getElementById('toggleHtml').classList.add('active');
+        document.getElementById('htmlContent').classList.remove('hidden');
+        document.getElementById('text').value = '';
+      }
+    }
+
+    // Form submission
+    document.getElementById('emailForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const to = document.getElementById('to').value;
+      const subject = document.getElementById('subject').value;
+      const text = document.getElementById('text').value;
+      const html = document.getElementById('html').value;
+      const smtpHost = document.getElementById('smtpHost').value;
+      const smtpPort = document.getElementById('smtpPort').value;
+      const smtpUser = document.getElementById('smtpUser').value;
+      const smtpPass = document.getElementById('smtpPass').value;
+
+      if (!text && !html) {
+        alert('Please provide either plain text or HTML content.');
+        return;
+      }
+
+      const payload = { to, subject };
+      if (text) payload.text = text;
+      if (html) payload.html = html;
+      if (smtpHost || smtpPort || smtpUser || smtpPass) {
+        payload.smtp = {};
+        if (smtpHost) payload.smtp.host = smtpHost;
+        if (smtpPort) payload.smtp.port = parseInt(smtpPort);
+        if (smtpUser) payload.smtp.user = smtpUser;
+        if (smtpPass) payload.smtp.pass = smtpPass;
+      }
+
+      const btn = e.target.querySelector('button[type="submit"]');
+      const original = btn.innerHTML;
+      btn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Sending...';
+      btn.disabled = true;
+
+      try {
+        const res = await fetch('/api/mail/send', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+        const data = await res.json();
+        document.getElementById('responseContent').textContent = JSON.stringify(data, null, 2);
+        document.getElementById('response').classList.remove('hidden');
+        document.getElementById('response').scrollIntoView({ behavior: 'smooth' });
+      } catch (err) {
+        document.getElementById('responseContent').textContent = 'Error: ' + err.message;
+        document.getElementById('response').classList.remove('hidden');
+      } finally {
+        btn.innerHTML = original;
+        btn.disabled = false;
+      }
+    });
+
+    // Pre-fill test data
+    document.addEventListener('DOMContentLoaded', () => {
+      document.getElementById('to').value = 'test@example.com';
+      document.getElementById('subject').value = 'Test from Mailing API';
+      document.getElementById('text').value = 'This is a test email sent via the API.';
+      document.getElementById('html').value = '<h1 style="color: #3b82f6;">Hello!</h1><p>This is a <strong>test email</strong> from the Mailing Service.</p>';
+    });
+  </script>
+</body>
+</html>

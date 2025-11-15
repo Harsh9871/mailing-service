@@ -1,0 +1,29 @@
+{
+  "name": "mailing-service",
+  "version": "1.0.0",
+  "description": "",
+  "main": "src/app.js",
+  "type": "module",
+  "scripts": {
+    "dev": "nodemon src/app.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Harsh9871/mailing-service.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.21.2",
+    "nodemailer": "^6.9.5",
+    "dotenv": "^16.4.7"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.10"
+  },
+  "bugs": {
+    "url": "https://github.com/Harsh9871/mailing-service/issues"
+  },
+  "homepage": "https://github.com/Harsh9871/mailing-service#readme"
+}

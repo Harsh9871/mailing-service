@@ -1,0 +1,237 @@
+{
+  "mailing_service_api": {
+    "name": "Mailing Service API",
+    "version": "1.0.0",
+    "description": "A RESTful microservice for sending emails with customizable SMTP configurations",
+    "base_url": "http://localhost:3200/api/mail",
+    "endpoints": [
+      {
+        "method": "POST",
+        "path": "/send",
+        "description": "Send an email using default or custom SMTP configuration",
+        "authentication": "None required",
+        "request_format": {
+          "content_type": "application/json",
+          "body_structure": {
+            "required_fields": ["to", "subject"],
+            "optional_fields": ["text", "html", "smtp"],
+            "field_descriptions": {
+              "to": "Recipient email address (string)",
+              "subject": "Email subject line (string)",
+              "text": "Plain text version of email content (string)",
+              "html": "HTML version of email content (string)",
+              "smtp": "Custom SMTP configuration object (optional)"
+            },
+            "smtp_configuration": {
+              "host": "SMTP server hostname (string)",
+              "port": "SMTP server port (number)",
+              "user": "SMTP authentication username (string)",
+              "pass": "SMTP authentication password (string)"
+            }
+          }
+        },
+        "response_format": {
+          "success": {
+            "status_code": 200,
+            "body": {
+              "success": true,
+              "messageId": "string (nodemailer message ID)"
+            }
+          },
+          "error": {
+            "status_code": 500,
+            "body": {
+              "success": false,
+              "error": "string (error message)"
+            }
+          }
+        }
+      }
+    ],
+    "usage_examples": [
+      {
+        "name": "Basic email with default SMTP",
+        "description": "Send a simple text email using environment-configured SMTP",
+        "request": {
+          "method": "POST",
+          "url": "/api/mail/send",
+          "headers": {
+            "Content-Type": "application/json"
+          },
+          "body": {
+            "to": "recipient@example.com",
+            "subject": "Test Email from Mailing Service",
+            "text": "This is a plain text test email sent using the default SMTP configuration.",
+            "html": "<h1>Test Email</h1><p>This is an HTML test email sent using the default SMTP configuration.</p>"
+          }
+        },
+        "response": {
+          "status": 200,
+          "body": {
+            "success": true,
+            "messageId": "<d8a1b2c3-4e5f-6a7b-8c9d-0e1f2a3b4c5d@example.com>"
+          }
+        }
+      },
+      {
+        "name": "Email with custom SMTP",
+        "description": "Send email using custom SMTP credentials provided in request",
+        "request": {
+          "method": "POST",
+          "url": "/api/mail/send",
+          "headers": {
+            "Content-Type": "application/json"
+          },
+          "body": {
+            "to": "user@domain.com",
+            "subject": "Custom SMTP Test",
+            "text": "This email is sent using custom SMTP credentials.",
+            "html": "<div style='font-family: Arial, sans-serif;'><h2>Custom SMTP Test</h2><p>This email is sent using custom SMTP credentials.</p></div>",
+            "smtp": {
+              "host": "smtp.gmail.com",
+              "port": 587,
+              "user": "your-email@gmail.com",
+              "pass": "your-app-password"
+            }
+          }
+        },
+        "response": {
+          "status": 200,
+          "body": {
+            "success": true,
+            "messageId": "<f1e2d3c4-b5a6-7c8d-9e0f-1a2b3c4d5e6f@gmail.com>"
+          }
+        }
+      },
+      {
+        "name": "Minimal email (text only)",
+        "description": "Send email with only required fields and text content",
+        "request": {
+          "method": "POST",
+          "url": "/api/mail/send",
+          "headers": {
+            "Content-Type": "application/json"
+          },
+          "body": {
+            "to": "test@example.org",
+            "subject": "Minimal Test",
+            "text": "This is a minimal email with only text content."
+          }
+        },
+        "response": {
+          "status": 200,
+          "body": {
+            "success": true,
+            "messageId": "<a1b2c3d4-e5f6-7a8b-9c0d-1e2f3a4b5c6d@example.org>"
+          }
+        }
+      },
+      {
+        "name": "Error example - missing required field",
+        "description": "Example of error response when required fields are missing",
+        "request": {
+          "method": "POST",
+          "url": "/api/mail/send",
+          "headers": {
+            "Content-Type": "application/json"
+          },
+          "body": {
+            "subject": "Missing recipient",
+            "text": "This request will fail because 'to' field is missing."
+          }
+        },
+        "response": {
+          "status": 500,
+          "body": {
+            "success": false,
+            "error": "Error message describing what went wrong"
+          }
+        }
+      }
+    ],
+    "environment_variables": {
+      "required_for_default_smtp": [
+        {
+          "name": "DEFAULT_MAIL_HOST",
+          "description": "Default SMTP server hostname"
+        },
+        {
+          "name": "DEFAULT_MAIL_PORT",
+          "description": "Default SMTP server port"
+        },
+        {
+          "name": "DEFAULT_MAIL_USER",
+          "description": "Default SMTP username"
+        },
+        {
+          "name": "DEFAULT_MAIL_PASS",
+          "description": "Default SMTP password"
+        },
+        {
+          "name": "DEFAULT_MAIL_FROM",
+          "description": "Default sender email address"
+        }
+      ],
+      "optional": [
+        {
+          "name": "PORT",
+          "description": "Server port (default: 3100)"
+        }
+      ]
+    },
+    "testing_instructions": [
+      {
+        "step": 1,
+        "action": "Start the server",
+        "command": "npm run dev"
+      },
+      {
+        "step": 2,
+        "action": "Send a test request using curl",
+        "command": "curl -X POST http://localhost:3100/api/mail/send -H \"Content-Type: application/json\" -d '{\"to\": \"test@example.com\", \"subject\": \"Test\", \"text\": \"Hello World\"}'"
+      },
+      {
+        "step": 3,
+        "action": "Or use the web interface",
+        "instruction": "Visit http://localhost:3100 in browser to access the documentation and testing page"
+      }
+    ],
+    "common_use_cases": [
+      {
+        "name": "Transactional emails",
+        "description": "Send order confirmations, password resets, notifications"
+      },
+      {
+        "name": "Marketing campaigns",
+        "description": "Send bulk newsletters and promotional content"
+      },
+      {
+        "name": "Multi-tenant applications",
+        "description": "Different clients can use their own SMTP configurations"
+      },
+      {
+        "name": "Development testing",
+        "description": "Test email functionality during development"
+      }
+    ],
+    "error_handling": {
+      "common_errors": [
+        {
+          "error_type": "SMTP connection error",
+          "cause": "Invalid SMTP credentials or server configuration",
+          "resolution": "Verify SMTP settings and credentials"
+        },
+        {
+          "error_type": "Missing required fields",
+          "cause": "Required fields (to, subject) not provided",
+          "resolution": "Ensure all required fields are included in request"
+        },
+        {
+          "error_type": "No content provided",
+          "cause": "Both text and html fields are empty",
+          "resolution": "Provide at least one of text or html content"
+        }
+      ]
+    }
+  }
+}
